@@ -19,6 +19,8 @@
 #include <machine/archtypes.h>
 #include "kernel/proc.h" /* for queue constants */
 
+int secuencia = 0;
+
 static minix_timer_t sched_timer;
 static unsigned balance_timeout;
 
@@ -416,6 +418,7 @@ static void balance_queues(minix_timer_t *tp)
   *===========================================================================*/
  int realizar_loteria()
  {
+
  	struct schedproc *rmp;
 	int procesos;
  	int proc_nr;
@@ -425,10 +428,29 @@ static void balance_queues(minix_timer_t *tp)
  	int flag = -1;
  	int nTickets = 0;
 
+  int opcion1 = 50;
+  int opcion2 = 20;
+  int opcion3 = 3;
+
+  int opcion = random() % 3;
+
+
  	for (proc_nr=0, rmp=schedproc; proc_nr < NR_PROCS; proc_nr++, rmp++) {
  		if ((rmp->flags & IN_USE) && PROCESS_IN_USER_Q(rmp)) {
  			if (USER_Q == rmp->priority) {
- 				nTickets += rmp->ticketsNum;
+ 			//	nTickets += rmp->ticketsNum;
+
+        if(opcion == 0){
+          nTickets += rmp->opcion1;
+        }
+        if(opcion == 1){
+          nTickets += rmp->opcion2;
+        }
+
+        if(opcion == 2){
+          nTickets += rmp->opcion3;
+        }
+
  			}
  		}
  	}
@@ -464,7 +486,7 @@ static void balance_queues(minix_timer_t *tp)
 
  		}
  	}
- 	printf("En la cola 17: %d\n",procesos);
+ 	//printf("En la cola 17: %d\n",procesos);
  	return nTickets ? flag : OK;
  }
 
@@ -475,12 +497,34 @@ static void balance_queues(minix_timer_t *tp)
 	los nuevos tickes atendiendo a su prioridad*/
 int masbilletes(int ntickets, struct schedproc* p)
  {
+
  	int add;
 
+  int opcion1 = 50;
+  int opcion2 = 20;
+  int opcion3 = 3;
+
+  int opcion = random() % 3;
+
   /*Limite de tickes igualado a 50*/
+  /*
  	add = p->ticketsNum + ntickets > 50 ? 50 - p->ticketsNum : ntickets;
  	add = p->ticketsNum + ntickets < 1 ? 1 - p->ticketsNum: add;
- 	p->ticketsNum += add;
+  */
+  if(opcion == 0){
+      p->ticketsNum = opcion1;
+      add = opcion1;
+  }
+  if(opcion == 1){
+      p->ticketsNum = opcion2;
+      add = opcion2;
+  }
+
+  if(opcion == 2){
+      p->ticketsNum = opcion3;
+      add = opcion3;
+  }
+
  	return add;
 
  }
